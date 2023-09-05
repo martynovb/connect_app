@@ -1,3 +1,4 @@
+import 'package:connect_app/presentation/page/router/router.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -13,7 +14,35 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Placeholder(),
+      appBar: AppBar(
+        title: Text('Connect App'),
+        centerTitle: true,
+        actions: [
+          IconButton(
+              onPressed: () {
+                Navigator.pushNamed(context, AppRouter.mePage);
+              },
+              icon: Icon(Icons.person))
+        ],
+      ),
+      body: Padding(
+          padding: EdgeInsets.only(left: 16, right: 16),
+          child: Column(
+            children: [
+              SizedBox(
+                height: 24,
+              ),
+              TextField(
+                decoration: InputDecoration(
+                    hintText: 'Search', icon: Icon(Icons.search)),
+              ),
+              Spacer(),
+              Center(
+                child: Text('Home Page'),
+              ),
+              Spacer(),
+            ],
+          )),
     );
   }
 }
