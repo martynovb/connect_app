@@ -9,6 +9,7 @@ class MeBloc extends BaseBloc {
   }
 
   Future<void> _isAuthorizedEventHandler(event, emit) async {
+    emit(LoadingState());
     bool result = await authRepository.isAuthorized();
     emit(result ? AuthorizedState() : UnauthorizedState());
   }

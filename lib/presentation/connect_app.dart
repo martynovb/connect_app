@@ -43,6 +43,7 @@ class _ConnectAppState extends State<ConnectApp> {
           ),
         ],
         child: MaterialApp(
+          debugShowCheckedModeBanner: false,
           home: HomePage(),
           routes: AppRouter.routes,
         ));
