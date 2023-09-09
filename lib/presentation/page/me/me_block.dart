@@ -23,4 +23,6 @@ class IsAuthorizedEvent extends MeEvent {}
 
 class UnauthorizedState extends MeState {}
 
-class AuthorizedState extends MeState {}
+class AuthorizedState extends MeState {
+
+}

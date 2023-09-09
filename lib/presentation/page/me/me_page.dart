@@ -39,18 +39,20 @@ class _MePageState extends State<MePage> {
         body: BaseBlocBuilder<MeBloc>(
           bloc: meBloc,
           builder: (BuildContext context, BaseState state) {
-            return Center(
-              child: Text('Me page: ${state.runtimeType}'),
-            );
+            return state.runtimeType == AuthorizedState ? _meForm(state as AuthorizedState) : _unauthorizedForm();
           },
         ));
   }
 
-  Widget _meForm(){
-
+  Widget _meForm(AuthorizedState state) {
+    return Center(
+      child: Text('_meForm'),
+    );
   }
 
-  Widget _unauthorizedForm(){
-    return
+  Widget _unauthorizedForm() {
+    return Center(
+      child: Text('_unauthorizedForm'),
+    );
   }
 }

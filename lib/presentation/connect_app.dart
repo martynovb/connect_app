@@ -1,4 +1,4 @@
-import 'package:connect_app/data/repo/auth_repo.dart';
+import 'package:connect_app/presentation/page/home/home_bloc.dart';
 import 'package:connect_app/presentation/page/home/home_page.dart';
 import 'package:connect_app/presentation/page/me/me_block.dart';
 import 'package:connect_app/presentation/page/router/router.dart';
@@ -40,6 +40,9 @@ class _ConnectAppState extends State<ConnectApp> {
         providers: [
           BlocProvider(
             create: (context) => GetIt.instance<MeBloc>(),
+          ),
+          BlocProvider(
+            create: (context) => GetIt.instance<HomeBloc>(),
           ),
         ],
         child: MaterialApp(
