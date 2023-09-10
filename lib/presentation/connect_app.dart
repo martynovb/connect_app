@@ -1,3 +1,4 @@
+import 'package:connect_app/presentation/page/auth/auth_bloc.dart';
 import 'package:connect_app/presentation/page/home/home_bloc.dart';
 import 'package:connect_app/presentation/page/home/home_page.dart';
 import 'package:connect_app/presentation/page/me/me_block.dart';
@@ -38,6 +39,9 @@ class _ConnectAppState extends State<ConnectApp> {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
         providers: [
+          BlocProvider(
+            create: (context) => GetIt.instance<AuthBloc>(),
+          ),
           BlocProvider(
             create: (context) => GetIt.instance<MeBloc>(),
           ),

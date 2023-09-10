@@ -1,3 +1,4 @@
+import 'package:connect_app/presentation/page/auth/login_user_page.dart';
 import 'package:connect_app/presentation/page/base/base_bloc.dart';
 import 'package:connect_app/presentation/page/base/base_bloc_builder.dart';
 import 'package:connect_app/presentation/page/me/me_block.dart';
@@ -39,7 +40,9 @@ class _MePageState extends State<MePage> {
         body: BaseBlocBuilder<MeBloc>(
           bloc: meBloc,
           builder: (BuildContext context, BaseState state) {
-            return state.runtimeType == AuthorizedState ? _meForm(state as AuthorizedState) : _unauthorizedForm();
+            return state.runtimeType == AuthorizedState
+                ? _meForm(state as AuthorizedState)
+                : _unauthorizedForm();
           },
         ));
   }
@@ -51,8 +54,19 @@ class _MePageState extends State<MePage> {
   }
 
   Widget _unauthorizedForm() {
-    return Center(
-      child: Text('_unauthorizedForm'),
+    return Column(
+      children: [
+        Text('_unauthorizedForm'),
+        TextButton(
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (BuildContext context) {
+                    return const LoginUserPage();
+                  },
+                  fullscreenDialog: true));
+            },
+            child: Text('Login as user'))
+      ],
     );
   }
 }

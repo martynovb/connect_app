@@ -4,7 +4,7 @@ import 'package:connect_app/domain/error_handler/exception.dart';
 abstract class BaseBloc extends Bloc<BaseEvent, BaseState> {
   BaseBloc(super.initialState);
 
-  Function(dynamic event, Emitter<BaseState> emit) runEvent(Future<void> Function(dynamic event, Emitter<BaseState> emit) eventFunction) {
+  Function(dynamic event, Emitter<BaseState> emit) runEvent<E extends BaseEvent>(Future<void> Function(E event, Emitter<BaseState> emit) eventFunction) {
     return (dynamic event, Emitter<BaseState> emit) async {
       try {
         await eventFunction(event, emit);
@@ -15,16 +15,27 @@ abstract class BaseBloc extends Bloc<BaseEvent, BaseState> {
       }
     };
   }
+
+  void dispose(){
+    emit(DefaultState());
+  }
 }
 
 abstract class BaseEvent {}
 
 abstract class BaseState {}
 
-class LoadingState extends BaseState {}
+class DefaultState extends BaseState {
+
+}
+
+class LoadingState extends BaseState {
+
+}
 
 class ErrorState extends BaseState {
   final String errorMessage;
 
   ErrorState(this.errorMessage);
 }
+

@@ -14,9 +14,13 @@ class TokenProvider {
     return null;
   }
 
-  Future<void> setToken(String token) async {
+  Future<void> setToken(String? token) async {
     final box = await Hive.openBox<String>(_tokenBoxName);
-    box.put(_tokenKey, token);
+    if(token != null) {
+      box.put(_tokenKey, token);
+    } else {
+      deleteToken();
+    }
   }
 
   Future<void> deleteToken() async {

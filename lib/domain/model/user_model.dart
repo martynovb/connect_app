@@ -5,10 +5,10 @@ class UserModel {
   final String email;
   final String fullName;
 
-  UserModel.fromApiModel(UserApiModel apiModel)
-      : id = apiModel.id ?? -1,
-        email = apiModel.email ?? '',
-        fullName = apiModel.fullName ?? '';
+  UserModel.fromApiModel(UserApiModel? apiModel)
+      : id = apiModel?.id ?? -1,
+        email = apiModel?.email ?? '',
+        fullName = apiModel?.fullName ?? '';
 
   UserModel.empty()
       : id = -1,
