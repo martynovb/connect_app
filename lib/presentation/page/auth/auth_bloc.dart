@@ -2,8 +2,10 @@ import 'package:connect_app/common/logger.dart';
 import 'package:connect_app/domain/model/user_model.dart';
 import 'package:connect_app/domain/usecase/login_user_usecase.dart';
 import 'package:connect_app/presentation/page/base/base_bloc.dart';
+import 'package:connect_app/presentation/page/router/router.dart';
 
 class AuthBloc extends BaseBloc {
+  static const _tag = 'AuthBloc';
   final LoginUserUseCase loginUserUseCase;
 
   AuthBloc({required this.loginUserUseCase}) : super(DefaultState()) {
@@ -19,8 +21,8 @@ class AuthBloc extends BaseBloc {
         repeatPassword: event.repeatPassword,
       ),
     );
-    ConnectLogger.d('auth', result);
-    emit(ShowUserDataState(result));
+    ConnectLogger.d(_tag, result);
+    emit(PopCurrentRoute(routeName: AppRouter.mePage));
   }
 }
 

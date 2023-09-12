@@ -49,7 +49,7 @@ class _MePageState extends State<MePage> {
 
   Widget _meForm(AuthorizedState state) {
     return Center(
-      child: Text('_meForm'),
+      child: Text(state.userModel.email),
     );
   }
 

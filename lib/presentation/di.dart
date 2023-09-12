@@ -7,6 +7,7 @@ import 'package:connect_app/data/repo/auth_repo.dart';
 import 'package:connect_app/data/repo/business_repo.dart';
 import 'package:connect_app/domain/field_validation/email_validator.dart';
 import 'package:connect_app/domain/usecase/get_all_business_usecase.dart';
+import 'package:connect_app/domain/usecase/get_current_user_usecase.dart';
 import 'package:connect_app/domain/usecase/login_user_usecase.dart';
 import 'package:connect_app/presentation/page/auth/auth_bloc.dart';
 import 'package:connect_app/presentation/page/home/home_bloc.dart';
@@ -56,6 +57,10 @@ class Injector {
   static _injectDomainLayer() {
     _getIt.registerSingleton<EmailFieldValidator>(EmailFieldValidator());
 
+    _getIt.registerSingleton<GetCurrentUserUseCase>(GetCurrentUserUseCase(
+      authRepository: _getIt<AuthRepository>(),
+    ));
+
     _getIt.registerSingleton<GetAllBusinessUseCase>(GetAllBusinessUseCase(
       businessRepository: _getIt<BusinessRepository>(),
     ));
@@ -72,7 +77,7 @@ class Injector {
     ));
 
     _getIt.registerSingleton<MeBloc>(MeBloc(
-      authRepository: _getIt<AuthRepository>(),
+      getCurrentUserUseCase: _getIt<GetCurrentUserUseCase>(),
     ));
     _getIt.registerSingleton<HomeBloc>(HomeBloc(
       getAllBusinessUseCase: _getIt<GetAllBusinessUseCase>(),

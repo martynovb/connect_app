@@ -1,8 +1,11 @@
+import 'package:connect_app/common/logger.dart';
 import 'package:connect_app/domain/model/business_model.dart';
 import 'package:connect_app/domain/usecase/get_all_business_usecase.dart';
 import 'package:connect_app/presentation/page/base/base_bloc.dart';
 
 class HomeBloc extends BaseBloc {
+  static const _tag = 'HomeBloc';
+
   final GetAllBusinessUseCase getAllBusinessUseCase;
 
   HomeBloc({required this.getAllBusinessUseCase}) : super(LoadingState()) {
@@ -12,6 +15,7 @@ class HomeBloc extends BaseBloc {
   Future<void> _showBusinessesListHandler(event, emit) async {
     emit(LoadingState());
     var result = await getAllBusinessUseCase.execute();
+    ConnectLogger.d(_tag, result.length);
     emit(ShowBusinessesListState(result));
   }
 }

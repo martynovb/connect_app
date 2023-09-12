@@ -19,7 +19,7 @@ class LoginUserUseCase extends BaseUseCase<Future<UserModel>, LoginUserParams> {
     return authRepository
         .loginUser(email: params!.email, password: params.password)
         .then(
-          (value) => UserModel.fromApiModel(value.data?.userApiModel),
+          (user) => UserModel.fromApiModel(user),
         );
   }
 }

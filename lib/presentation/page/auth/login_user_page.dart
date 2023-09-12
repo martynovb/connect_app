@@ -36,9 +36,7 @@ class _LoginUserPageState extends State<LoginUserPage> {
         body: BaseBlocBuilder<AuthBloc>(
           bloc: authBloc,
           builder: (BuildContext context, BaseState state) {
-            return state.runtimeType == DefaultState
-                ? _userLoginForm()
-                : _unauthorizedForm();
+            return  _userLoginForm();
           },
         ));
   }
@@ -70,12 +68,6 @@ class _LoginUserPageState extends State<LoginUserPage> {
             },
             child: Text('Login'))
       ],
-    );
-  }
-
-  Widget _unauthorizedForm() {
-    return Center(
-      child: Text('_unauthorizedForm'),
     );
   }
 

@@ -57,33 +57,30 @@ class _HomePageState extends State<HomePage> {
               BaseBlocBuilder<HomeBloc>(
                   bloc: homeBloc,
                   builder: (BuildContext context, BaseState state) {
-                    return state.runtimeType == ShowBusinessesListState
-                        ? Expanded(
-                            child: _businessesList(
-                                state as ShowBusinessesListState))
-                        : Center(
-                            child: Text('Unknown state: ${state.runtimeType}'),
-                          );
+                    return Expanded(
+                      child: _businessesList(state),
+                    );
                   }),
             ],
           )),
     );
   }
 
-  Widget _businessesList(ShowBusinessesListState state) {
+  Widget _businessesList(BaseState state) {
+    var list = state is ShowBusinessesListState ? state.businesses : [];
     return ListView.builder(
       itemBuilder: (context, index) {
         return Container(
           height: 100,
           child: Column(
             children: [
-              Text(state.businesses[index].title),
-              Text(state.businesses[index].description),
+              Text(list[index].title),
+              Text(list[index].description),
             ],
           ),
         );
       },
-      itemCount: state.businesses.length,
+      itemCount: list.length,
     );
   }
 }

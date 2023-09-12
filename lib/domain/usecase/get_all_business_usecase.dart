@@ -11,12 +11,10 @@ class GetAllBusinessUseCase
   });
 
   @override
-  Future<List<BusinessModel>> execute({void params}) {
-    return businessRepository.getAllBusinesses().then(
-          (data) => data
-              .map((businessApiModel) =>
-                  BusinessModel.fromApiModel(businessApiModel))
-              .toList(),
-        );
+  Future<List<BusinessModel>> execute({void params}) async {
+    final data = await businessRepository.getAllBusinesses();
+    return data
+        .map((businessApiModel) => BusinessModel.fromApiModel(businessApiModel))
+        .toList();
   }
 }

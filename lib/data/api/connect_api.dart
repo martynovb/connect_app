@@ -6,7 +6,7 @@ import 'package:connect_app/data/api/model/auth_user_api_model.dart';
 class ConnectApi {
   final ConnectNetworkManager _networkManager;
 
-  static const _businessApiPath = 'businesses/';
+  static const _businessApiPath = 'businesses';
   static const _authPath = 'auth/';
 
   ConnectApi(this._networkManager);
@@ -19,11 +19,18 @@ class ConnectApi {
     required String password,
   }) =>
       _networkManager.post(
-        '${_authPath}login/user/',
+        '${_authPath}login/user',
         body: {
           'email': email,
           'password': password,
         },
+      ).then(
+        (result) => AuthUserApiModel.fromJson(result),
+      );
+
+  Future<AuthUserApiModel> currentUser() =>
+      _networkManager.get(
+        'auth/profile/user',
       ).then(
         (result) => AuthUserApiModel.fromJson(result),
       );
@@ -33,7 +40,7 @@ class ConnectApi {
     required String password,
   }) =>
       _networkManager.post(
-        '${_authPath}login/businesses/',
+        '${_authPath}login/businesses',
         body: {
           'email': email,
           'password': password,
@@ -45,10 +52,8 @@ class ConnectApi {
   /// *************************************************************
   /// BUSINESS API
 
-  Future<List<BusinessApiModel>> getAllBusinesses() =>
-      _networkManager.get(_businessApiPath).then(
-            (result) => result
-                .map((object) => BusinessApiModel.fromJson(object))
-                .toList(),
-          );
+  Future<List<BusinessApiModel>> getAllBusinesses() async {
+    List<dynamic> result = await _networkManager.get(_businessApiPath);
+    return result.map((object) => BusinessApiModel.fromJson(object)).toList();
+  }
 }

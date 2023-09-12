@@ -25,7 +25,7 @@ class ConnectNetworkManager {
   }) async {
     return _requestWrapper(() => httpClient.post(
           Uri.parse(path),
-          body: body,
+          body: jsonEncode(body),
         ));
   }
 
