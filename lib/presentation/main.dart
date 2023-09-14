@@ -1,14 +1,14 @@
+import 'package:connect_app/data/api/token_provider.dart';
 import 'package:connect_app/presentation/connect_app.dart';
 import 'package:connect_app/presentation/di.dart';
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final appDocumentDirectory = await getApplicationDocumentsDirectory();
-  Hive.init(appDocumentDirectory.path);
+  await Hive.initFlutter();
+  await TokenProvider().openBox();
   Injector.inject();
   runApp(const ConnectApp());
 }

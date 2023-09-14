@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 
+final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
+
 class ConnectApp extends StatefulWidget {
   const ConnectApp({super.key});
 
@@ -50,6 +52,7 @@ class _ConnectAppState extends State<ConnectApp> {
           ),
         ],
         child: MaterialApp(
+          navigatorObservers: [routeObserver],
           debugShowCheckedModeBanner: false,
           home: HomePage(),
           routes: AppRouter.routes,

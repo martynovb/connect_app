@@ -1,59 +1,68 @@
 import 'package:connect_app/presentation/page/base/base_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
 
-class BaseBlocBuilder<BlocType extends BaseBloc> extends StatelessWidget {
+class BaseBlocBuilder<BlocType extends BaseBloc> extends StatefulWidget {
   final BlocType? bloc;
   final Widget Function(BuildContext context, BaseState state) builder;
   final Widget? loadingWidget;
   final Widget? errorWidget;
-  Route? _dialogRoute;
 
-  BaseBlocBuilder({
+  const BaseBlocBuilder({
     Key? key,
-    this.bloc,
+    required this.bloc,
     required this.builder,
     this.loadingWidget,
     this.errorWidget,
   }) : super(key: key);
 
   @override
+  BaseBlocBuilderState createState() => BaseBlocBuilderState<BlocType>();
+}
+
+class BaseBlocBuilderState<BlocType extends BaseBloc> extends State<BaseBlocBuilder<BlocType>> {
+  Route? _dialogRoute;
+
+  @override
   Widget build(BuildContext context) {
     return BlocConsumer<BlocType, BaseState>(
-      listener: (context, state) {
-        if (state is LoadingState) {
-          showMyDialog(context, state.isCancelable);
-        } else {
-          if (_dialogRoute != null && Navigator.of(context).canPop()) {
-            Navigator.of(context).removeRoute(_dialogRoute!);
-          }
-        }
-
-        if (state is NavigateToRoute) {
-          Navigator.of(context).pushNamed(state.routeName);
-        } else if (state is PopCurrentRoute) {
-          state.routeName != null
-              ? Navigator.of(context)
-                  .popUntil(ModalRoute.withName(state.routeName!))
-              : Navigator.of(context).pop();
-        }
-      },
-      builder: (context, state) {
-        if (state is ErrorState) {
-          return errorWidget ??
-              Center(child: Text('An error occurred: ${state.errorMessage}'));
-        }
-        return builder(context, state);
-      },
+      bloc: widget.bloc,
+      listener: _listener,
+      builder: _builder,
     );
   }
 
-  void showMyDialog(BuildContext context, bool isCancelable, [Duration? timeout = const Duration(seconds: 30)] ) {
+  void _listener(BuildContext context, BaseState state) {
+    if (state is LoadingState && _dialogRoute == null) {
+      _showLoadingDialog(context, state.isCancelable);
+    } else {
+      _removeLoadingDialog(context);
+    }
+
+    if (state is NavigateToRoute) {
+      Navigator.of(context).pushNamed(state.routeName);
+    } else if (state is PopCurrentRoute) {
+      state.routeName != null
+          ? Navigator.of(context)
+              .popUntil(ModalRoute.withName(state.routeName!))
+          : Navigator.of(context).pop();
+    }
+  }
+
+  Widget _builder(BuildContext context, BaseState state) {
+    if (state is ErrorState) {
+      return widget.errorWidget ??
+          Center(child: Text('An error occurred: ${state.errorMessage}'));
+    }
+    return widget.builder(context, state);
+  }
+
+  void _showLoadingDialog(BuildContext context, bool isCancelable,
+      [Duration? timeout = const Duration(seconds: 15)]) {
     _dialogRoute = PageRouteBuilder(
       pageBuilder: (BuildContext context, Animation<double> animation,
           Animation<double> secondaryAnimation) {
-        return const FullScreenProgressDialog();
+        return const ProgressDialog();
       },
       opaque: false,
     );
@@ -61,16 +70,21 @@ class BaseBlocBuilder<BlocType extends BaseBloc> extends StatelessWidget {
     Navigator.of(context).push(_dialogRoute!);
     if (timeout != null) {
       Future.delayed(timeout, () {
-        if (_dialogRoute != null && Navigator.of(context).canPop()) {
-          Navigator.of(context).removeRoute(_dialogRoute!);
-        }
+        _removeLoadingDialog(context);
       });
+    }
+  }
+
+  void _removeLoadingDialog(BuildContext context) {
+    if (_dialogRoute != null) {
+      Navigator.of(context).removeRoute(_dialogRoute!);
+      _dialogRoute = null;
     }
   }
 }
 
-class FullScreenProgressDialog extends StatelessWidget {
-  const FullScreenProgressDialog({Key? key}) : super(key: key);
+class ProgressDialog extends StatelessWidget {
+  const ProgressDialog({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -94,7 +108,7 @@ class FullScreenProgressDialog extends StatelessWidget {
                   color: Colors.grey.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: Center(child: CircularProgressIndicator()),
+                child: const Center(child: CircularProgressIndicator()),
               ),
             ),
           ),

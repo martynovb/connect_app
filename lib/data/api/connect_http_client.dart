@@ -16,8 +16,9 @@ class ConnectHttpClient extends http.BaseClient {
   @override
   Future<http.StreamedResponse> send(http.BaseRequest request) async {
     final newRequest = await _prepareRequest(request);
-    if (tokenProvider.hasToken) {
-      newRequest.headers['Authorization'] = 'Bearer ${tokenProvider.token}';
+    final token = tokenProvider.token;
+    if (token != null) {
+      newRequest.headers['Authorization'] = 'Token ${token}';
     }
     return _inner.send(newRequest);
   }

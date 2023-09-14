@@ -4,8 +4,9 @@ class TokenProvider {
   static const _tokenBoxName = 'tokenBox';
   static const _tokenKey = 'token';
 
-  bool get hasToken => Hive.isBoxOpen(_tokenBoxName) &&
-      Hive.box<String>(_tokenBoxName).containsKey(_tokenKey);
+  Future<void> openBox() async {
+    await Hive.openBox<String>(_tokenBoxName);
+  }
 
   String? get token {
     if (Hive.isBoxOpen(_tokenBoxName)) {

@@ -14,6 +14,8 @@ class ConnectApi {
   /// *************************************************************
   /// AUTH API
 
+  Future<dynamic> logout() => _networkManager.post('${_authPath}logout');
+
   Future<AuthUserApiModel> loginUser({
     required String email,
     required String password,
@@ -28,10 +30,11 @@ class ConnectApi {
         (result) => AuthUserApiModel.fromJson(result),
       );
 
-  Future<AuthUserApiModel> currentUser() =>
-      _networkManager.get(
+  Future<AuthUserApiModel> currentUser() => _networkManager
+      .get(
         'auth/profile/user',
-      ).then(
+      )
+      .then(
         (result) => AuthUserApiModel.fromJson(result),
       );
 

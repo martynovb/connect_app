@@ -1,3 +1,4 @@
+import 'package:connect_app/presentation/connect_app.dart';
 import 'package:connect_app/presentation/page/auth/login_user_page.dart';
 import 'package:connect_app/presentation/page/base/base_bloc.dart';
 import 'package:connect_app/presentation/page/base/base_bloc_builder.dart';
@@ -13,14 +14,38 @@ class MePage extends StatefulWidget {
   State<MePage> createState() => _MePageState();
 }
 
-class _MePageState extends State<MePage> {
-  MeBloc? meBloc;
+class _MePageState extends State<MePage> with RouteAware {
+  late MeBloc meBloc;
+
+  @override
+  void didPopNext() {
+    super.didPopNext();
+    meBloc.add(IsAuthorizedEvent());
+  }
+
+  @override
+  void didPush() {
+    super.didPush();
+    meBloc.add(IsAuthorizedEvent());
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context) as PageRoute);
+  }
 
   @override
   void initState() {
     super.initState();
     meBloc = GetIt.instance<MeBloc>();
-    meBloc?.add(IsAuthorizedEvent());
+  }
+
+  @override
+  void dispose() {
+    meBloc.dispose();
+    routeObserver.unsubscribe(this);
+    super.dispose();
   }
 
   @override
@@ -54,9 +79,10 @@ class _MePageState extends State<MePage> {
   }
 
   Widget _unauthorizedForm() {
-    return Column(
+    return Center(
+        child: Column(
       children: [
-        Text('_unauthorizedForm'),
+        Text('unauthorized'),
         TextButton(
             onPressed: () {
               Navigator.of(context).push(MaterialPageRoute(
@@ -67,6 +93,6 @@ class _MePageState extends State<MePage> {
             },
             child: Text('Login as user'))
       ],
-    );
+    ));
   }
 }

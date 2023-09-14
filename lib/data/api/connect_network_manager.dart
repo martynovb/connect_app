@@ -16,6 +16,7 @@ class ConnectNetworkManager {
   });
 
   Future<dynamic> get(String path) async {
+    ConnectLogger.d(_tag, 'GET: $path');
     return _requestWrapper(() => httpClient.get(Uri.parse(path)));
   }
 
@@ -23,9 +24,11 @@ class ConnectNetworkManager {
     String path, {
     Map<String, dynamic>? body,
   }) async {
+    ConnectLogger.d(_tag, 'POST: $path');
+    ConnectLogger.d(_tag, 'body: $body');
     return _requestWrapper(() => httpClient.post(
           Uri.parse(path),
-          body: jsonEncode(body),
+          body: body != null ? jsonEncode(body) : null,
         ));
   }
 
@@ -35,16 +38,17 @@ class ConnectNetworkManager {
       final response = await request();
       if (response.statusCode == 200) {
         return jsonDecode(response.body);
+      } else if (response.statusCode == 204) {
+        return null;
       } else {
         throw errorHandler.handleError(response.statusCode, response.body);
       }
-    } on FormatException {
-      ConnectLogger.e(_tag, 'ParseException');
-      throw ParseException('Failed to parse the response from the server.');
     } catch (e) {
       ConnectLogger.e(_tag, e.toString());
-      if (e is ApiException || e is InvalidCredentialsException) {
+      if (e is ApiException) {
         rethrow;
+      } else if (e is FormatException) {
+        throw ParseException('Failed to parse the response from the server.');
       } else {
         throw ApiException('An unexpected error occurred: $e');
       }

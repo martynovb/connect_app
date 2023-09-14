@@ -1,12 +1,18 @@
 import 'dart:convert';
 
+import 'package:connect_app/data/api/token_provider.dart';
 
 class ErrorHandler {
+  final TokenProvider tokenProvider;
+
+  ErrorHandler({required this.tokenProvider});
+
   Exception handleError(int statusCode, String responseBody) {
     switch (statusCode) {
       case 400:
         return BadRequestException('Bad request');
       case 401:
+        tokenProvider.deleteToken();
         return InvalidCredentialsException('Unauthorized');
       case 403:
         return ForbiddenException('Forbidden');
@@ -26,7 +32,9 @@ class ErrorHandler {
 
 class ApiException implements Exception {
   final String message;
+
   ApiException(this.message);
+
   @override
   String toString() => message;
 }

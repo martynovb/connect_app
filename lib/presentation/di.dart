@@ -9,6 +9,7 @@ import 'package:connect_app/domain/field_validation/email_validator.dart';
 import 'package:connect_app/domain/usecase/get_all_business_usecase.dart';
 import 'package:connect_app/domain/usecase/get_current_user_usecase.dart';
 import 'package:connect_app/domain/usecase/login_user_usecase.dart';
+import 'package:connect_app/domain/usecase/logout_usecase.dart';
 import 'package:connect_app/presentation/page/auth/auth_bloc.dart';
 import 'package:connect_app/presentation/page/home/home_bloc.dart';
 import 'package:connect_app/presentation/page/me/me_block.dart';
@@ -30,7 +31,7 @@ class Injector {
 
   static _injectDataLayer() {
     _getIt.registerSingleton<TokenProvider>(TokenProvider());
-    _getIt.registerSingleton<ErrorHandler>(ErrorHandler());
+    _getIt.registerSingleton<ErrorHandler>(ErrorHandler(tokenProvider: _getIt<TokenProvider>()));
     _getIt.registerSingleton<ConnectHttpClient>(ConnectHttpClient(
       baseUrl: _baseUrl,
       defaultHeaders: _headers,
@@ -57,13 +58,17 @@ class Injector {
   static _injectDomainLayer() {
     _getIt.registerSingleton<EmailFieldValidator>(EmailFieldValidator());
 
-    _getIt.registerSingleton<GetCurrentUserUseCase>(GetCurrentUserUseCase(
-      authRepository: _getIt<AuthRepository>(),
-    ));
+    _getIt.registerSingleton<LogoutUseCase>(
+      LogoutUseCase(authRepository: _getIt<AuthRepository>()),
+    );
 
-    _getIt.registerSingleton<GetAllBusinessUseCase>(GetAllBusinessUseCase(
-      businessRepository: _getIt<BusinessRepository>(),
-    ));
+    _getIt.registerSingleton<GetCurrentUserUseCase>(
+      GetCurrentUserUseCase(authRepository: _getIt<AuthRepository>()),
+    );
+
+    _getIt.registerSingleton<GetAllBusinessUseCase>(
+      GetAllBusinessUseCase(businessRepository: _getIt<BusinessRepository>()),
+    );
 
     _getIt.registerSingleton<LoginUserUseCase>(LoginUserUseCase(
       authRepository: _getIt<AuthRepository>(),
@@ -74,6 +79,7 @@ class Injector {
   static _injectBloC() {
     _getIt.registerSingleton<AuthBloc>(AuthBloc(
       loginUserUseCase: _getIt<LoginUserUseCase>(),
+      logoutUseCase: _getIt<LogoutUseCase>(),
     ));
 
     _getIt.registerSingleton<MeBloc>(MeBloc(

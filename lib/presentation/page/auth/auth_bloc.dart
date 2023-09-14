@@ -1,15 +1,21 @@
 import 'package:connect_app/common/logger.dart';
 import 'package:connect_app/domain/model/user_model.dart';
 import 'package:connect_app/domain/usecase/login_user_usecase.dart';
+import 'package:connect_app/domain/usecase/logout_usecase.dart';
 import 'package:connect_app/presentation/page/base/base_bloc.dart';
 import 'package:connect_app/presentation/page/router/router.dart';
 
 class AuthBloc extends BaseBloc {
   static const _tag = 'AuthBloc';
   final LoginUserUseCase loginUserUseCase;
+  final LogoutUseCase logoutUseCase;
 
-  AuthBloc({required this.loginUserUseCase}) : super(DefaultState()) {
+  AuthBloc({
+    required this.loginUserUseCase,
+    required this.logoutUseCase,
+  }) : super(DefaultState()) {
     on<LoginUserEvent>(runEvent(_loginUserEventHandler));
+    on<LogoutEvent>(runEvent(_logoutEventHandler));
   }
 
   Future<void> _loginUserEventHandler(LoginUserEvent event, emit) async {
@@ -22,7 +28,14 @@ class AuthBloc extends BaseBloc {
       ),
     );
     ConnectLogger.d(_tag, result);
-    emit(PopCurrentRoute(routeName: AppRouter.mePage));
+    emit(PopCurrentRoute());
+  }
+
+  Future<void> _logoutEventHandler(LogoutEvent event, emit) async {
+    emit(LoadingState());
+    await logoutUseCase.execute();
+    ConnectLogger.d(_tag, 'logout: success');
+    emit(PopCurrentRoute());
   }
 }
 
@@ -41,6 +54,8 @@ class LoginUserEvent extends AuthEvent {
     required this.repeatPassword,
   });
 }
+
+class LogoutEvent extends AuthEvent {}
 
 class ShowUserDataState extends AuthState {
   final UserModel userModel;

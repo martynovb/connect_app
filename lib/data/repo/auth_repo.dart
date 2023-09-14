@@ -11,7 +11,7 @@ class AuthRepository {
 
   AuthRepository({required this.api, required this.tokenProvider});
 
-  Future<bool> isAuthorized() async => tokenProvider.hasToken;
+  Future<bool> isAuthorized() async => tokenProvider.token != null;
 
   Future<UserApiModel?> loginUser({
     required String email,
@@ -22,10 +22,13 @@ class AuthRepository {
     return result.data?.userApiModel;
   }
 
+  Future<void> logout() async {
+    await api.logout();
+    await tokenProvider.deleteToken();
+  }
+
   Future<UserApiModel?> me() async {
     final result = await api.currentUser();
     return result.data?.userApiModel;
   }
-
-
 }
