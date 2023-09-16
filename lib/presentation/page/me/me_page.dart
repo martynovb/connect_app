@@ -1,5 +1,6 @@
 import 'package:connect_app/presentation/connect_app.dart';
 import 'package:connect_app/presentation/page/auth/login_user_page.dart';
+import 'package:connect_app/presentation/page/auth/signup/signup_container_page.dart';
 import 'package:connect_app/presentation/page/base/base_bloc.dart';
 import 'package:connect_app/presentation/page/base/base_bloc_builder.dart';
 import 'package:connect_app/presentation/page/me/me_block.dart';
@@ -91,7 +92,17 @@ class _MePageState extends State<MePage> with RouteAware {
                   },
                   fullscreenDialog: true));
             },
-            child: Text('Login as user'))
+            child: Text('Login as user')),
+        TextButton(
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (BuildContext context) {
+                  return const SignUpContainerPage();
+                },
+                fullscreenDialog: true,
+              ));
+            },
+            child: Text('Sign Up')),
       ],
     ));
   }

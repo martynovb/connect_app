@@ -1,6 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:connect_app/common/logger.dart';
 import 'package:connect_app/domain/error_handler/exception.dart';
+import 'package:connect_app/domain/field_validation/field_type.dart';
+import 'package:connect_app/presentation/page/auth/auth_bloc.dart';
 
 typedef EventFunction = Future<void> Function(
     dynamic event, Emitter<BaseState> emit);
@@ -32,6 +34,18 @@ abstract class BaseBloc extends Bloc<BaseEvent, BaseState> {
       emit(ErrorState(error.errorMessage));
     } else {
       emit(ErrorState(error.toString()));
+    }
+  }
+
+  void validationErrorHandler(Emitter<BaseState> emit, dynamic error){
+    if (error is ValidationErrorsMap) {
+      emit(ValidationErrorState(
+        errorsMap: error.errorMap.map(
+              (key, value) => MapEntry(key, value.errorMessage),
+        ),
+      ));
+    } else {
+      handleError(emit, error);
     }
   }
 
@@ -68,4 +82,10 @@ class PopCurrentRoute extends BaseState {
   final String? routeName;
 
   PopCurrentRoute({this.routeName});
+}
+
+class ValidationErrorState extends AuthState {
+  final Map<FieldType, String> errorsMap;
+
+  ValidationErrorState({required this.errorsMap});
 }

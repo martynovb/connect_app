@@ -17,3 +17,11 @@ class ValidationError extends BaseException {
     required String errorMessage,
   }) : super(errorMessage);
 }
+
+class ValidationErrorsMap extends BaseException {
+  final Map<FieldType, ValidationError> errorMap;
+
+  ValidationErrorsMap({
+    required this.errorMap,
+  }) : super('Validation error');
+}

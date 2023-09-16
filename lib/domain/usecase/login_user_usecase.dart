@@ -1,6 +1,5 @@
 import 'package:connect_app/data/repo/auth_repo.dart';
 import 'package:connect_app/domain/field_validation/email_validator.dart';
-import 'package:connect_app/domain/field_validation/field_type.dart';
 import 'package:connect_app/domain/model/user_model.dart';
 import 'package:connect_app/domain/usecase/base_usecase.dart';
 
@@ -15,7 +14,7 @@ class LoginUserUseCase extends BaseUseCase<Future<UserModel>, LoginUserParams> {
 
   @override
   Future<UserModel> execute({LoginUserParams? params}) async {
-    emailFieldValidator.validate(FieldType.EMAIL, params?.email);
+    emailFieldValidator.validate(params?.email);
     return authRepository
         .loginUser(email: params!.email, password: params.password)
         .then(

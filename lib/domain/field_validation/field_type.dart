@@ -1,4 +1,8 @@
 enum FieldType {
-  EMAIL,
-  PASSWORD,
+  email,
+  fullName,
+  password,
+  repeatPassword,
+  businessTitle,
+  businessDescription
 }

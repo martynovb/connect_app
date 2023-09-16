@@ -5,11 +5,18 @@ import 'package:connect_app/data/api/token_provider.dart';
 import 'package:connect_app/data/error_handler.dart';
 import 'package:connect_app/data/repo/auth_repo.dart';
 import 'package:connect_app/data/repo/business_repo.dart';
+import 'package:connect_app/domain/field_validation/business_description_field_validator.dart';
+import 'package:connect_app/domain/field_validation/business_title_field_validator.dart';
 import 'package:connect_app/domain/field_validation/email_validator.dart';
+import 'package:connect_app/domain/field_validation/fullname_field_validator.dart';
+import 'package:connect_app/domain/field_validation/password_validator.dart';
+import 'package:connect_app/domain/field_validation/repeat_password_validator.dart';
 import 'package:connect_app/domain/usecase/get_all_business_usecase.dart';
 import 'package:connect_app/domain/usecase/get_current_user_usecase.dart';
 import 'package:connect_app/domain/usecase/login_user_usecase.dart';
 import 'package:connect_app/domain/usecase/logout_usecase.dart';
+import 'package:connect_app/domain/usecase/signup_business_usecase.dart';
+import 'package:connect_app/domain/usecase/signup_user_usecase.dart';
 import 'package:connect_app/presentation/page/auth/auth_bloc.dart';
 import 'package:connect_app/presentation/page/home/home_bloc.dart';
 import 'package:connect_app/presentation/page/me/me_block.dart';
@@ -31,7 +38,8 @@ class Injector {
 
   static _injectDataLayer() {
     _getIt.registerSingleton<TokenProvider>(TokenProvider());
-    _getIt.registerSingleton<ErrorHandler>(ErrorHandler(tokenProvider: _getIt<TokenProvider>()));
+    _getIt.registerSingleton<ErrorHandler>(
+        ErrorHandler(tokenProvider: _getIt<TokenProvider>()));
     _getIt.registerSingleton<ConnectHttpClient>(ConnectHttpClient(
       baseUrl: _baseUrl,
       defaultHeaders: _headers,
@@ -56,6 +64,14 @@ class Injector {
   }
 
   static _injectDomainLayer() {
+    _getIt.registerSingleton<BusinessTitleFieldValidator>(
+        BusinessTitleFieldValidator());
+    _getIt.registerSingleton<BusinessDescriptionFieldValidator>(
+        BusinessDescriptionFieldValidator());
+    _getIt.registerSingleton<FullNameFieldValidator>(FullNameFieldValidator());
+    _getIt.registerSingleton<RepeatPasswordFieldValidator>(
+        RepeatPasswordFieldValidator());
+    _getIt.registerSingleton<PasswordFieldValidator>(PasswordFieldValidator());
     _getIt.registerSingleton<EmailFieldValidator>(EmailFieldValidator());
 
     _getIt.registerSingleton<LogoutUseCase>(
@@ -74,12 +90,31 @@ class Injector {
       authRepository: _getIt<AuthRepository>(),
       emailFieldValidator: _getIt<EmailFieldValidator>(),
     ));
+
+    _getIt.registerSingleton<SignUpUserUseCase>(SignUpUserUseCase(
+      authRepository: _getIt<AuthRepository>(),
+      emailFieldValidator: _getIt<EmailFieldValidator>(),
+      passwordFieldValidator: _getIt<PasswordFieldValidator>(),
+      fullNameFieldValidator: _getIt<FullNameFieldValidator>(),
+      repeatPasswordFieldValidator: _getIt<RepeatPasswordFieldValidator>(),
+    ));
+
+    _getIt.registerSingleton<SignUpBusinessUseCase>(SignUpBusinessUseCase(
+      authRepository: _getIt<AuthRepository>(),
+      emailFieldValidator: _getIt<EmailFieldValidator>(),
+      passwordFieldValidator: _getIt<PasswordFieldValidator>(),
+      repeatPasswordFieldValidator: _getIt<RepeatPasswordFieldValidator>(),
+      businessDescriptionFieldValidator: _getIt<BusinessDescriptionFieldValidator>(),
+      businessTitleFieldValidator: _getIt<BusinessTitleFieldValidator>(),
+    ));
   }
 
   static _injectBloC() {
     _getIt.registerSingleton<AuthBloc>(AuthBloc(
       loginUserUseCase: _getIt<LoginUserUseCase>(),
       logoutUseCase: _getIt<LogoutUseCase>(),
+      signUpUserUseCase: _getIt<SignUpUserUseCase>(),
+      signUpBusinessUseCase: _getIt<SignUpBusinessUseCase>(),
     ));
 
     _getIt.registerSingleton<MeBloc>(MeBloc(
